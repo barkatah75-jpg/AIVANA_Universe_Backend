@@ -1,8 +1,15 @@
 ﻿const express = require('express');
 const app = express();
-let port = 5000;
-function startServer(p){
-  app.get('/', (req, res) => res.send('AIVANA Backend API running on port ' + p));
-  app.listen(p, () => console.log('ðŸš€ Backend active on port', p));
-}
-startServer(port);
+
+// Dynamic port (Render or Local)
+const PORT = process.env.PORT || 5000;
+
+// Basic route
+app.get('/', (req, res) => {
+  res.send('🚀 AIVANA Backend API running on port ' + PORT);
+});
+
+// Start the server
+app.listen(PORT, () => {
+  console.log(`✅ Backend active on port ${PORT}`);
+});
