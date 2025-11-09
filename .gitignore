@@ -1,0 +1,27 @@
+# Node dependencies
+node_modules/
+npm-debug.log
+package-lock.json
+
+# Windows/System folders
+AppData/
+Local Settings/
+Cookies/
+Recent/
+SendTo/
+Start Menu/
+Templates/
+NetHood/
+PrintHood/
+My Documents/
+Documents/My Music/
+Documents/My Pictures/
+Documents/My Videos/
+
+# VSCode and other configs
+.vscode/
+.docker/
+.chocolatey/
+.python_history
+.lesshst
+.gitconfig
