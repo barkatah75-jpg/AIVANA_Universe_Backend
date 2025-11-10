@@ -1,0 +1,17 @@
+﻿name: Run CheckTrials (hourly)
+on:
+  schedule:
+    - cron: "0 * * * *"
+  workflow_dispatch:
+
+jobs:
+  call-cron:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Call internal cron endpoint
+        env:
+          CRON_SECRET: ${{ secrets.INTERNAL_CRON_SECRET }}
+          BACKEND_URL: ${{ secrets.BACKEND_URL }}
+        run: |
+          echo "Calling $BACKEND_URL/api/internal/run-check-trials"
+          curl -X POST "$BACKEND_URL/api/internal/run-check-trials" -H "x-internal-secret: $CRON_SECRET" -H "Content-Type: application/json" -d "{}"
