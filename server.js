@@ -13,3 +13,11 @@ app.get('/', (req, res) => {
 app.listen(PORT, () => {
   console.log(`✅ Backend active on port ${PORT}`);
 });
+
+const usageRoutes = require("./routes/usage");
+const adminRoutes = require("./routes/admin");
+const internalRoutes = require("./routes/internal");
+
+app.use("/api/usage", usageRoutes);
+app.use("/api/admin", adminRoutes);
+app.use("/api/internal", internalRoutes);
