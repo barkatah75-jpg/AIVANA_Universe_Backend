@@ -1,21 +1,120 @@
-﻿const express = require("express");
+import express from "express";
+import cors from "cors";
+
 const app = express();
-require("dotenv").config();
-const bodyParser = require("body-parser");
-const cors = require("cors");
 
+/* =========================
+   MIDDLEWARE
+========================= */
 app.use(cors());
-app.use(bodyParser.json({ limit: "1mb" }));
+app.use(express.json());
 
-const usageRoutes = require("./routes/usage");
-const adminRoutes = require("./routes/admin");
-const internalRoutes = require("./routes/internal");
+/* =========================
+   ROOT TEST
+========================= */
+app.get("/", (req, res) => {
+  res.send("AIVANA Backend is LIVE");
+});
 
-app.use("/api/usage", usageRoutes);
-app.use("/api/admin", adminRoutes);
-app.use("/api/internal", internalRoutes);
+/* =========================
+   ORDERS
+========================= */
+app.get("/api/orders", (req, res) => {
+  res.json([
+    {
+      id: "ORD-1001",
+      country: "Germany",
+      amount: 49.99,
+      profit: 22.5,
+      status: "Shipped"
+    },
+    {
+      id: "ORD-1002",
+      country: "USA",
+      amount: 69.99,
+      profit: 31.2,
+      status: "Processing"
+    }
+  ]);
+});
 
-app.get("/", (req,res) => res.send("AIVANA Backend is live"));
+app.get("/api/orders/:id", (req, res) => {
+  res.json({
+    id: req.params.id,
+    country: "Germany",
+    amount: 49.99,
+    profit: 22.5,
+    status: "Shipped"
+  });
+});
 
-const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log("✅ Backend active on port", PORT));
+/* =========================
+   ANALYTICS
+========================= */
+app.get("/api/analytics/profit", (req, res) => {
+  res.json({
+    revenue: 12000,
+    profit: 5200,
+    margin: 43
+  });
+});
+
+/* =========================
+   SHIPMENTS
+========================= */
+app.get("/api/shipments", (req, res) => {
+  res.json([
+    {
+      orderId: "ORD-1001",
+      carrier: "Aramex",
+      status: "In Transit",
+      eta: "2025-01-25"
+    }
+  ]);
+});
+
+/* =========================
+   RETURNS
+========================= */
+app.get("/api/returns", (req, res) => {
+  res.json([
+    { id: "RET-001", orderId: "ORD-1001", status: "Pending" }
+  ]);
+});
+
+app.post("/api/returns/:id/approve", (req, res) => {
+  res.json({ success: true, id: req.params.id });
+});
+
+/* =========================
+   SUPPORT
+========================= */
+app.get("/api/support/messages", (req, res) => {
+  res.json([
+    { from: "Customer", message: "Where is my order?" }
+  ]);
+});
+
+app.post("/api/support/reply", (req, res) => {
+  res.json({ success: true });
+});
+
+/* =========================
+   STATS
+========================= */
+app.get("/api/stats", (req, res) => {
+  res.json({
+    orders: 124,
+    profit: 4520,
+    delayed: 3,
+    returns: 5
+  });
+});
+
+/* =========================
+   SERVER START (RENDER SAFE)
+========================= */
+const PORT = process.env.PORT || 10000;
+app.listen(PORT, () => {
+  console.log(`🚀 AIVANA Backend API running on port ${PORT}`);
+});
