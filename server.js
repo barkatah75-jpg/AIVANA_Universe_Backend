@@ -1,5 +1,6 @@
 import express from "express";
 import cors from "cors";
+import fetch from "node-fetch";
 
 const app = express();
 
@@ -45,9 +46,7 @@ app.get("/api/orders/:id", (req, res) => {
     amount: 49.99,
     profit: 22.5,
     status: "Shipped",
-    items: [
-      { sku: "SKU-BOHO-01", qty: 1 }
-    ]
+    items: [{ sku: "SKU-BOHO-01", qty: 1 }]
   });
 });
 
@@ -137,9 +136,45 @@ app.get("/api/stats", (req, res) => {
 });
 
 /* =========================
+   GEMINI AI ENDPOINT
+========================= */
+app.post("/api/ai/ask", async (req, res) => {
+  try {
+    const { prompt } = req.body;
+
+    if (!prompt) {
+      return res.status(400).json({ error: "Prompt is required" });
+    }
+
+    const response = await fetch(
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${process.env.GEMINI_API_KEY}`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          contents: [
+            {
+              parts: [{ text: prompt }]
+            }
+          ]
+        })
+      }
+    );
+
+    const data = await response.json();
+    res.json(data);
+  } catch (error) {
+    console.error("Gemini API error:", error);
+    res.status(500).json({ error: "Gemini API failed" });
+  }
+});
+
+/* =========================
    SERVER START (RENDER SAFE)
 ========================= */
 const PORT = process.env.PORT || 4000;
 app.listen(PORT, () => {
-  console.log(`AIVANA backend running on port ${PORT}`);
+  console.log(`🚀 AIVANA Backend API running on port ${PORT}`);
 });
